@@ -1,0 +1,8 @@
+; $Id$
+
+name = Tweets Block
+description = Easily display the tweets of a user in a block.
+core = 7.x
+dependencies[] = twitter_pull
+files[] = tweets_block.module
+files[] = tweets_block.install

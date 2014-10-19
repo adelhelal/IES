@@ -1,0 +1,12 @@
+﻿; Module Info
+
+name = Views Custom Reports
+description = An override for specific views
+core = 7.x
+version = 7.x-1.0-beta1
+
+files[] = views_custom_reports.module
+
+package = "Views"
+dependencies[] = views
+project = "views_custom_reports"

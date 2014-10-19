@@ -1,0 +1,15 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Install, update and uninstall functions for the tweets_block module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function tweets_block_uninstall() {
+  variable_del('tweets_block_username');
+  variable_del('tweets_block_number');
+}

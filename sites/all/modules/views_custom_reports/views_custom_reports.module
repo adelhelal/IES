@@ -1,0 +1,18 @@
+﻿<?php
+
+function views_custom_reports_views_pre_execute(&$view) 
+{
+  if($view->name == 'report_subscribers_counts') 
+  {
+    $view->build_info['query'] = "
+      SELECT c.name AS Subscription, COUNT(1) AS Subscribers
+      FROM simplenews_subscription AS s
+      INNER JOIN taxonomy_term_data AS c ON s.tid = c.tid
+      INNER JOIN simplenews_subscriber AS u ON s.snid = u.snid
+      WHERE u.activated = 1
+      GROUP BY s.tid
+      ";
+	}
+}
+
+?>

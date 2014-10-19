@@ -1,0 +1,97 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * This is the main file of the module. It is configuring the tweets block
+ * and creating its content.
+ */
+
+/**
+ * Implements hook_block_info()
+ */
+function tweets_block_block_info() {
+  $blocks['tweets_block'] = array(
+    'info' => t('Tweets Block: Displays the latest tweets of a user'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_init()
+ */
+function tweets_block_init() {
+  drupal_add_css(drupal_get_path('module', 'tweets_block') . '/theme/tweets-block-rendering.css');
+}
+
+/**
+ * Iplements hook_block_configure()
+ */
+function tweets_block_block_configure($delta = '') {
+  if ($delta == 'tweets_block') {
+    $form['tweets_block_username'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Twitter username'),
+      '#size' => 60,
+      '#description' => t('The user needs to have a public Twitter profile for his tweets to be displayed.'),
+      '#default_value' => variable_get('tweets_block_username',  'drupal'),
+    );
+    
+    for ($i = 1; $i <= 10; $i++) {
+      $options[$i] = $i;
+    }
+    
+    $form['tweets_block_number'] = array(
+      '#type' => 'select',
+      '#title' => t('Number of tweets to display'),
+      '#options' => $options,
+      '#default_value' => variable_get('tweets_block_number', 3),
+    );
+  }
+  return $form;
+}
+
+/**
+ * Implements hook_block_save()
+ */
+function tweets_block_block_save($delta = '', $edit = array()) {
+  if ($delta = 'tweets_block') {
+    variable_set('tweets_block_username', $edit['tweets_block_username']);
+    variable_set('tweets_block_number', $edit['tweets_block_number']);
+  }
+}
+
+/**
+ * Implements hook_block_view()
+ */
+function tweets_block_block_view($delta = '') {
+  if ($delta = 'tweets_block') {
+    $block['subject'] = '<a href="http://www.twitter.com/' . variable_get('tweets_block_username') . '">' . variable_get('tweets_block_username') . t('\'s Latest Tweets') . '</a>';
+    $block['content'] = tweets_block_content($delta);
+  }
+  return $block;
+}
+
+/**
+ * Our defined block content function
+ */
+function tweets_block_content($calling_block) {
+  if ($calling_block == 'tweets_block') {
+    if (function_exists('twitter_pull_render')) {
+      $output = twitter_pull_render('@'. variable_get('tweets_block_username', 'drupal'), '', variable_get('tweets_block_number', 3), 'tweets_block_rendering');
+      return array('#markup' => $output);
+    } else {
+      drupal_set_message(t('You must enable the twitter_pull module'), 'error');
+    }
+  }
+}
+
+function tweets_block_theme() {
+  return array(
+    'tweets_block_rendering' => array(
+      'arguments' => array('tweets' => NULL, 'twitkey' => NULL, 'title' => NULL),
+      'path' => drupal_get_path('module', 'tweets_block') . '/theme',
+      'template' => 'tweets-block-rendering'
+    ),
+  );
+}
