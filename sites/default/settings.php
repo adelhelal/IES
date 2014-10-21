@@ -188,7 +188,7 @@ $databases = array (
       'username' => 'bdc43d6f0ec611',
       'password' => '91364d95',
       'host' => 'ap-cdbr-azure-southeast-a.cloudapp.net',
-      'port' => '',
+      'port' => '3306',
       'driver' => 'mysql',
       'prefix' => '',
     ),
